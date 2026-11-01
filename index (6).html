@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Помогу собрать ПК — гайд по подбору ПК + калькулятор FPS</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#060a12;color:#dfe7f3;line-height:1.7;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(900px 500px at 10% 0%,rgba(0,120,255,.18),transparent),radial-gradient(800px 500px at 90% 20%,rgba(0,255,180,.10),transparent),radial-gradient(700px 600px at 50% 90%,rgba(150,0,255,.12),transparent)}
+.bg:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:44px 44px}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:10;display:flex;justify-content:center;padding:12px 0;background:rgba(6,10,18,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+nav .pill{display:flex;gap:4px;background:rgba(20,30,50,.6);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:6px}
+nav a{color:#cfd8e8;text-decoration:none;font-size:14px;padding:8px 14px;border-radius:999px;white-space:nowrap}
+nav a:hover{background:rgba(255,255,255,.1);color:#fff}
+section{padding:64px 0 24px}
+h1{font-size:44px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(90deg,#7ec8ff,#a78bfa,#4ade80);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:30px;margin-bottom:8px}
+h3{font-size:20px;margin-bottom:8px}
+.lead{color:#9fb0c8;max-width:640px;font-size:18px}
+.hero{padding:90px 0 30px}
+.hero .tag{display:inline-block;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:#4ade80;border-radius:999px;padding:4px 14px;font-size:13px;margin-bottom:16px}
+.card{background:rgba(15,22,38,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px;margin:14px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.bcard{background:rgba(15,22,38,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px}
+.bcard ul{list-style:none;margin-top:8px}
+.bcard li{padding:4px 0;border-bottom:1px dashed rgba(255,255,255,.07);font-size:15px}
+.bsub{color:#8ba3c7;font-size:14px}
+.tips li{margin:10px 0;padding-left:26px;position:relative}
+.tips li:before{content:"✔";position:absolute;left:0;color:#4ade80}
+.tips.err li:before{content:"✖";color:#f87171}
+.calc{background:rgba(15,22,38,.8);border:1px solid rgba(90,140,255,.25);border-radius:20px;padding:26px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+label{display:block;font-size:13px;color:#8ba3c7;margin-bottom:6px}
+select{width:100%;background:#0c1424;color:#e8eef8;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:11px 12px;font-size:15px;outline:none}
+button{background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff;border:0;border-radius:12px;padding:13px 26px;font-size:16px;font-weight:600;cursor:pointer;width:100%}
+button:hover{filter:brightness(1.15)}
+.gcard{background:rgba(10,16,30,.7);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:12px 0}
+.gtag{font-size:12px;color:#8ba3c7;font-weight:400}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+.pcard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:12px;font-size:13px}
+.pcard.rec{border-color:#4ade80;background:rgba(74,222,128,.07)}
+.ptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pname{font-weight:600;font-size:14px}
+.pfps{color:#7ec8ff;font-weight:700}
+.pcard ul{list-style:none}
+.pcard li{padding:3px 0;color:#b9c6da;border-bottom:1px dashed rgba(255,255,255,.05)}
+.warn{color:#fbbf24;font-size:12px;margin:6px 0}
+#verdict{margin-top:16px;padding:16px;border-radius:12px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.35)}
+details{background:rgba(15,22,38,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+details p{color:#b9c6da;margin-top:8px}
+footer{padding:40px 0 60px;color:#5f7396;font-size:13px;text-align:center}
+.small{font-size:13px;color:#8ba3c7}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<nav><div class="pill">
+<a href="#home">🏠 Главная</a><a href="#parts">Комплектующие</a><a href="#calc">🚀 Калькулятор FPS</a><a href="#builds">Готовые сборки</a><a href="#assembly">Сборка</a><a href="#tips">Советы</a><a href="#mistakes">Ошибки</a><a href="#faq">FAQ</a>
+</div></nav>
+<div class="wrap">
+<section class="hero" id="home">
+<span class="tag">Гайд + калькулятор в одном сайте</span>
+<h1>Помогу собрать ПК</h1>
+<p class="lead">Понятный гайд по подбору комплектующих: как не переплатить, что важнее для игр и как всё собрать с нуля. А в конце — калькулятор FPS, который подберёт настройки графики под ваши процессор и видеокарту.</p>
+</section>
+<section id="parts">
+<h2>Комплектующие: что важно знать</h2>
+<div class="grid2">
+<div class="card"><h3>🧠 Процессор</h3><p class="small">Для игр хватит 6 ядер, но частота и кэш решают. Ryzen с X3D — король шутеров. Для монтажа и стримов — 8 и больше ядер.</p></div>
+<div class="card"><h3>🎮 Видеокарта</h3><p class="small">Главный источник FPS. Берите под целевое разрешение: 1080p — RTX 4060 / RX 7600, 1440p — RTX 4070 / RX 7800 XT, 4K — RTX 4080+.</p></div>
+<div class="card"><h3>🧩 Оперативная память</h3><p class="small">16 ГБ минимум, 32 ГБ — запас. Две планки вместо одной: двухканальный режим. Не забудьте включить XMP/EXPO в BIOS.</p></div>
+<div class="card"><h3>💾 Накопитель</h3><p class="small">Только SSD, лучше NVMe. 512 ГБ для старта, 1–2 ТБ для библиотеки игр. HDD оставьте для архива.</p></div>
+<div class="card"><h3>⚡ Блок питания</h3><p class="small">Не экономьте. Мощность = TDP процессора + видеокарты + 150–200 Вт запаса. Бренды: be quiet!, Corsair, Chieftec, DeepCool.</p></div>
+<div class="card"><h3>🔧 Материнская плата</h3><p class="small">Главное — сокет под ваш процессор и поддержка памяти (DDR4 или DDR5). Разъёмы: M.2, нормальный VRM, PCIe 4.0.</p></div>
+</div>
+</section>
+<section id="calc">
+<h2>🚀 Калькулятор FPS</h2>
+<p class="lead">Выберите процессор, видеокарту, ОЗУ и разрешение — покажем FPS в 12 популярных играх и подберём настройки: для максимального FPS, баланса и максимального качества.</p>
+<div class="calc">
+<div class="row">
+<div><label>Процессор</label><select id="cpuSel"><option value="0">AMD FX-4300</option>
+<option value="1">AMD FX-6300</option>
+<option value="2">AMD FX-8350</option>
+<option value="3">AMD FX-8370</option>
+<option value="4">Intel Core i5-2400</option>
+<option value="5">Intel Core i7-2600</option>
+<option value="6">Intel Core i5-4460</option>
+<option value="7">Intel Core i7-4770</option>
+<option value="8">Intel Core i7-4790K</option>
+<option value="9">Intel Core i7-3770</option>
+<option value="10">Intel Xeon E5-2650 v2</option>
+<option value="11">Intel Xeon E5-2670</option>
+<option value="12">Intel Xeon E5-2680 v4</option>
+<option value="13">Intel Core 2 Duo E8400</option>
+<option value="14">Intel Pentium G4560</option>
+<option value="15">Intel Pentium G5400</option>
+<option value="16">Intel Core i3-6100</option>
+<option value="17">Intel Core i3-7100</option>
+<option value="18">Intel Core i3-8100</option>
+<option value="19">Intel Core i3-9100</option>
+<option value="20">Intel Core i3-10100</option>
+<option value="21">Intel Core i3-12100</option>
+<option value="22">Intel Core i3-13100</option>
+<option value="23">Intel Core i3-14100</option>
+<option value="24">Intel Core i5-7400</option>
+<option value="25">Intel Core i5-7500</option>
+<option value="26">Intel Core i5-8400</option>
+<option value="27">Intel Core i5-8500</option>
+<option value="28">Intel Core i5-9400F</option>
+<option value="29">Intel Core i5-9600K</option>
+<option value="30">Intel Core i5-10400F</option>
+<option value="31">Intel Core i5-10600K</option>
+<option value="32">Intel Core i5-11400F</option>
+<option value="33">Intel Core i5-11600K</option>
+<option value="34">Intel Core i5-12400F</option>
+<option value="35">Intel Core i5-12600K</option>
+<option value="36">Intel Core i5-13400F</option>
+<option value="37">Intel Core i5-13600K</option>
+<option value="38">Intel Core i5-14600KF</option>
+<option value="39">Intel Core i7-7700</option>
+<option value="40">Intel Core i7-7700K</option>
+<option value="41">Intel Core i7-8700</option>
+<option value="42">Intel Core i7-8700K</option>
+<option value="43">Intel Core i7-9700F</option>
+<option value="44">Intel Core i7-9700K</option>
+<option value="45">Intel Core i7-10700F</option>
+<option value="46">Intel Core i7-10700K</option>
+<option value="47">Intel Core i7-11700F</option>
+<option value="48">Intel Core i7-11700K</option>
+<option value="49">Intel Core i7-12700F</option>
+<option value="50">Intel Core i7-12700K</option>
+<option value="51">Intel Core i7-13700K</option>
+<option value="52">Intel Core i7-14700KF</option>
+<option value="53">Intel Core i9-9900K</option>
+<option value="54">Intel Core i9-10900K</option>
+<option value="55">Intel Core i9-11900K</option>
+<option value="56">Intel Core i9-12900K</option>
+<option value="57">Intel Core i9-13900K</option>
+<option value="58">Intel Core i9-14900K</option>
+<option value="59">Intel Core i9-14900KS</option>
+<option value="60">AMD Ryzen 3 1200</option>
+<option value="61">AMD Ryzen 3 1300X</option>
+<option value="62">AMD Ryzen 3 2200G</option>
+<option value="63">AMD Ryzen 3 3100</option>
+<option value="64">AMD Ryzen 3 3300X</option>
+<option value="65">AMD Ryzen 5 1400</option>
+<option value="66">AMD Ryzen 5 1600</option>
+<option value="67">AMD Ryzen 5 2600</option>
+<option value="68">AMD Ryzen 5 2600X</option>
+<option value="69">AMD Ryzen 5 3600</option>
+<option value="70">AMD Ryzen 5 3600X</option>
+<option value="71">AMD Ryzen 5 3700X</option>
+<option value="72">AMD Ryzen 5 3800X</option>
+<option value="73">AMD Ryzen 5 5600</option>
+<option value="74">AMD Ryzen 5 5600X</option>
+<option value="75">AMD Ryzen 5 5700X</option>
+<option value="76">AMD Ryzen 5 5700X3D</option>
+<option value="77">AMD Ryzen 7 5800X</option>
+<option value="78">AMD Ryzen 7 5800X3D</option>
+<option value="79">AMD Ryzen 9 5900X</option>
+<option value="80">AMD Ryzen 9 5950X</option>
+<option value="81">AMD Ryzen 5 7500F</option>
+<option value="82">AMD Ryzen 5 7600</option>
+<option value="83">AMD Ryzen 5 7600X</option>
+<option value="84">AMD Ryzen 7 7700X</option>
+<option value="85">AMD Ryzen 7 7800X3D</option>
+<option value="86">AMD Ryzen 9 7900X</option>
+<option value="87">AMD Ryzen 9 7900X3D</option>
+<option value="88">AMD Ryzen 9 7950X</option>
+<option value="89">AMD Ryzen 9 7950X3D</option>
+<option value="90">AMD Ryzen 5 9600X</option>
+<option value="91">AMD Ryzen 7 9700X</option>
+<option value="92">AMD Ryzen 7 9800X3D</option>
+<option value="93">AMD Ryzen 9 9900X</option>
+<option value="94">AMD Ryzen 9 9950X</option>
+<option value="95">AMD Ryzen 9 9950X3D</option></select></div>
+<div><label>Видеокарта</label><select id="gpuSel"><option value="0">NVIDIA GeForce GT 710</option>
+<option value="1">NVIDIA GeForce GT 730</option>
+<option value="2">NVIDIA GeForce GT 1030</option>
+<option value="3">NVIDIA GeForce GTX 1050</option>
+<option value="4">NVIDIA GeForce GTX 1050 Ti</option>
+<option value="5">NVIDIA GeForce GTX 1060 3GB</option>
+<option value="6">NVIDIA GeForce GTX 1060 5GB</option>
+<option value="7">NVIDIA GeForce GTX 1060 6GB</option>
+<option value="8">NVIDIA GeForce GTX 1070</option>
+<option value="9">NVIDIA GeForce GTX 1070 Ti</option>
+<option value="10">NVIDIA GeForce GTX 1080</option>
+<option value="11">NVIDIA GeForce GTX 1080 Ti</option>
+<option value="12">NVIDIA GeForce GTX 1650</option>
+<option value="13">NVIDIA GeForce GTX 1650 Super</option>
+<option value="14">NVIDIA GeForce GTX 1660</option>
+<option value="15">NVIDIA GeForce GTX 1660 Super</option>
+<option value="16">NVIDIA GeForce GTX 1660 Ti</option>
+<option value="17">NVIDIA GeForce RTX 2060</option>
+<option value="18">NVIDIA GeForce RTX 2060 12GB</option>
+<option value="19">NVIDIA GeForce RTX 2060 Super</option>
+<option value="20">NVIDIA GeForce RTX 2070</option>
+<option value="21">NVIDIA GeForce RTX 2070 Super</option>
+<option value="22">NVIDIA GeForce RTX 2080</option>
+<option value="23">NVIDIA GeForce RTX 2080 Super</option>
+<option value="24">NVIDIA GeForce RTX 2080 Ti</option>
+<option value="25">NVIDIA GeForce RTX 3050</option>
+<option value="26">NVIDIA GeForce RTX 3060</option>
+<option value="27">NVIDIA GeForce RTX 3060 Ti</option>
+<option value="28">NVIDIA GeForce RTX 3070</option>
+<option value="29">NVIDIA GeForce RTX 3070 Ti</option>
+<option value="30">NVIDIA GeForce RTX 3080 10GB</option>
+<option value="31">NVIDIA GeForce RTX 3080 12GB</option>
+<option value="32">NVIDIA GeForce RTX 3080 Ti</option>
+<option value="33">NVIDIA GeForce RTX 3090</option>
+<option value="34">NVIDIA GeForce RTX 3090 Ti</option>
+<option value="35">NVIDIA GeForce RTX 4060</option>
+<option value="36">NVIDIA GeForce RTX 4060 Ti</option>
+<option value="37">NVIDIA GeForce RTX 4070</option>
+<option value="38">NVIDIA GeForce RTX 4070 Super</option>
+<option value="39">NVIDIA GeForce RTX 4070 Ti Super</option>
+<option value="40">NVIDIA GeForce RTX 4080</option>
+<option value="41">NVIDIA GeForce RTX 4080 Super</option>
+<option value="42">NVIDIA GeForce RTX 4090</option>
+<option value="43">NVIDIA GeForce RTX 5060</option>
+<option value="44">NVIDIA GeForce RTX 5060 Ti</option>
+<option value="45">NVIDIA GeForce RTX 5070</option>
+<option value="46">NVIDIA GeForce RTX 5070 Ti</option>
+<option value="47">NVIDIA GeForce RTX 5080</option>
+<option value="48">NVIDIA GeForce RTX 5090</option>
+<option value="49">AMD Radeon R7 240</option>
+<option value="50">AMD Radeon R9 270</option>
+<option value="51">AMD Radeon R9 280</option>
+<option value="52">AMD Radeon R9 280X</option>
+<option value="53">AMD Radeon R9 290</option>
+<option value="54">AMD Radeon R9 290X</option>
+<option value="55">AMD Radeon R9 380</option>
+<option value="56">AMD Radeon R9 Fury X</option>
+<option value="57">AMD Radeon RX 460</option>
+<option value="58">AMD Radeon RX 470</option>
+<option value="59">AMD Radeon RX 480</option>
+<option value="60">AMD Radeon RX 5500 XT</option>
+<option value="61">AMD Radeon RX 560</option>
+<option value="62">AMD Radeon RX 570</option>
+<option value="63">AMD Radeon RX 580</option>
+<option value="64">AMD Radeon RX 590</option>
+<option value="65">AMD Radeon RX 5600 XT</option>
+<option value="66">AMD Radeon RX 5700</option>
+<option value="67">AMD Radeon RX 5700 XT</option>
+<option value="68">AMD Radeon RX 6500 XT</option>
+<option value="69">AMD Radeon RX 6400</option>
+<option value="70">AMD Radeon RX 6600</option>
+<option value="71">AMD Radeon RX 6600 XT</option>
+<option value="72">AMD Radeon RX 6650 XT</option>
+<option value="73">AMD Radeon RX 6700 XT</option>
+<option value="74">AMD Radeon RX 6750 XT</option>
+<option value="75">AMD Radeon RX 6800</option>
+<option value="76">AMD Radeon RX 6800 XT</option>
+<option value="77">AMD Radeon RX 6900 XT</option>
+<option value="78">AMD Radeon RX 6950 XT</option>
+<option value="79">AMD Radeon RX 7600</option>
+<option value="80">AMD Radeon RX 7600 XT</option>
+<option value="81">AMD Radeon RX 7700 XT</option>
+<option value="82">AMD Radeon RX 7800 XT</option>
+<option value="83">AMD Radeon RX 7900 GRE</option>
+<option value="84">AMD Radeon RX 7900 XT</option>
+<option value="85">AMD Radeon RX 7900 XTX</option>
+<option value="86">AMD Radeon RX 9060 XT</option>
+<option value="87">AMD Radeon RX 9070</option>
+<option value="88">AMD Radeon RX 9070 XT</option>
+<option value="89">Intel Arc A310</option>
+<option value="90">Intel Arc A380</option>
+<option value="91">Intel Arc A580</option>
+<option value="92">Intel Arc A750</option>
+<option value="93">Intel Arc A770</option>
+<option value="94">Intel Arc B580</option>
+<option value="95">Встроенная: AMD Vega 8</option>
+<option value="96">Встроенная: AMD Vega 11</option>
+<option value="97">Встроенная: AMD Radeon 680M</option>
+<option value="98">Встроенная: AMD Radeon 780M</option>
+<option value="99">Встроенная: AMD Radeon 890M</option>
+<option value="100">Встроенная: Intel UHD 630</option>
+<option value="101">Встроенная: Intel UHD 770</option>
+<option value="102">Встроенная: Intel Iris Xe</option>
+<option value="103">Встроенная: Intel Arc iGPU</option></select></div>
+<div><label>Оперативная память</label><select id="ramSel"><option value="8">8 ГБ</option><option value="16" selected>16 ГБ</option><option value="32">32 ГБ</option><option value="64">64 ГБ</option></select></div>
+<div><label>Разрешение</label><select id="resSel"><option value="0" selected>1920×1080 (Full HD)</option><option value="1">2560×1440 (2K)</option><option value="2">3840×2160 (4K)</option></select></div>
+</div>
+<button onclick="calcAll()">Показать FPS и настройки</button>
+<div id="verdict"></div>
+<div id="results"></div>
+</div>
+</section>
+<section id="builds">
+<h2>Готовые сборки</h2>
+<p class="lead">Четыре проверенных варианта под разные бюджеты. Всё совместимо, ничего докупать не придётся (кроме монитора и периферии).</p>
+<div class="bgrid"><div class="bcard"><h3>Бюджет 30 000 ₽ — старт</h3><p class="bsub">1080p, киберспорт на высоких</p><ul><li>Процессор: Ryzen 5 5500 или i3-12100F</li><li>Видеокарта: RX 6600 или GTX 1660 Super (б/у — RX 5700 XT)</li><li>Материнская плата: B450 / H610</li><li>ОЗУ: 16 ГБ (2×8) DDR4 3200 МГц</li><li>SSD: 512 ГБ NVMe</li><li>Блок питания: 550 Вт (be quiet!, DeepCool, Chieftec)</li><li>Корпус: любой с нормальной вентиляцией</li></ul></div><div class="bcard"><h3>Бюджет 60 000 ₽ — золотая середина</h3><p class="bsub">1080p ультра / 1440p высокие</p><ul><li>Процессор: Ryzen 5 5600 или i5-12400F</li><li>Видеокарта: RX 6700 XT / RTX 3060 Ti / RX 7600</li><li>Материнская плата: B550 / B660</li><li>ОЗУ: 16 ГБ (2×8) DDR4 3600 МГц</li><li>SSD: 1 ТБ NVMe</li><li>Блок питания: 650 Вт бронза</li><li>Корпус: с сетчатой передней панелью</li></ul></div><div class="bcard"><h3>Бюджет 100 000 ₽ — уверенный 1440p</h3><p class="bsub">1440p ультра, трассировка по вкусу</p><ul><li>Процессор: Ryzen 5 7600 или i5-13400F</li><li>Видеокарта: RX 7800 XT / RTX 4070</li><li>Материнская плата: B650 / B760, DDR5</li><li>ОЗУ: 32 ГБ (2×16) DDR5 6000 МГц</li><li>SSD: 1 ТБ NVMe Gen4</li><li>Блок питания: 750 Вт золото</li><li>Охлаждение: башня на 4–6 тепловых трубок</li></ul></div><div class="bcard"><h3>Бюджет 200 000+ ₽ — без компромиссов</h3><p class="bsub">4K и трассировка лучей</p><ul><li>Процессор: Ryzen 7 9800X3D или i7-14700KF</li><li>Видеокарта: RTX 5080 / RX 9070 XT</li><li>Материнская плата: X670 / Z790</li><li>ОЗУ: 32 ГБ DDR5 6000 МГц CL30</li><li>SSD: 2 ТБ NVMe Gen4</li><li>Блок питания: 850 Вт золото</li><li>Охлаждение: СЖО 240–360 мм</li></ul></div></div>
+</section>
+<section id="assembly">
+<h2>Сборка с нуля: 12 шагов</h2>
+<ol><li>Подготовка: снимите боковую крышку корпуса, разложите детали на столе, не работайте на ковре — снимите статическое электричество, коснувшись батареи.</li><li>Процессор: поднимите рычажок сокета, совместите ключ (треугольник) на CPU с меткой на сокете, уложите без усилия, опустите рычажок.</li><li>Память: отожмите защёлки слотов, вставьте планки до щелчка. Две планки — во 2-й и 4-й слоты (каналы A2/B2), смотрите метки на плате.</li><li>Кулер: нанесите каплю термопасты размером с горошину в центр CPU, закрепите кулер по инструкции, подключите провод к разъёму CPU_FAN.</li><li>SSD M.2: вставьте в слот под углом, прижмите и закрепите винтом. В слот ближе к процессору — если он Gen4.</li><li>Блок питания: уложите вентилятором вниз (в решётку корпуса), подключите 24-pin к плате и 8-pin CPU (может быть 4+4).</li><li>Видеокарта: снимите заглушки слотов, вставьте карту в верхний слот PCIe до щелчка, закрепите винтами, подключите 6/8-pin питание.</li><li>Передняя панель: подключите провода к разъёмам JFP1/F_PANEL — сверяйтесь с мелкой распиновкой на плате или в инструкции.</li><li>Первый запуск: монитор в видеокарту (не в материнскую плату!). Включите — если нет изображения, переставьте ОЗУ в другие слоты и проверьте питание CPU.</li><li>BIOS: включите профиль XMP/EXPO для памяти (иначе она работает на 2133 МГц), проверьте температуры.</li><li>Windows: установите систему на SSD, затем драйверы видеокарты с сайта NVIDIA/AMD — не из «Диспетчера устройств».</li><li>Тест: запустите игру и следите за температурами (HWMonitor). CPU до 85°C и GPU до 80°C под нагрузкой — норма.</li></ol>
+</section>
+<section id="tips">
+<h2>Советы</h2>
+<ul class="tips"><li>Собирайте ПК вокруг одной задачи: для игр важнее видеокарта, для монтажа и кода — процессор и память.</li><li>Никогда не экономьте на блоке питания: дешёвый БП при скачке может унести с собой всю систему.</li><li>16 ГБ ОЗУ — современный минимум, 32 ГБ — запас на годы вперёд.</li><li>Две планки по 8 ГБ лучше одной на 16: двухканальный режим ускоряет игры и встроенную графику.</li><li>SSD обязателен: с ним Windows грузится за 15 секунд, а игры перестают подтормаживать на загрузках.</li><li>Проверяйте совместимость: сокет процессора должен совпадать с сокетом платы, а БП — тянуть видеокарту.</li><li>Не покупайте «геймерские» модули памяти с RGB по цене двух обычных — FPS от подсветки не растёт.</li><li>Б/у рынок — нормальный путь: RX 5700 XT, RTX 2070 Super, i5-10400F за половину цены дают 90% производительности.</li><li>Перед покупкой платы проверьте на сайте производителя, что ваш процессор поддерживается её BIOS.</li><li>Кабели питания видеокарты — только от БП, никаких переходников-«молексов» на мощных картах.</li></ul>
+</section>
+<section id="mistakes">
+<h2>Типичные ошибки</h2>
+<ul class="tips err"><li>Забыли про потенциал: поставили RTX 4070 к Ryzen 3 1200 — видеокарта простаивает (калькулятор покажет это).</li><li>Одна планка памяти вместо двух — минус 10–20% FPS во многих играх.</li><li>Кулер не подключён к CPU_FAN — компьютер не включится или уйдёт в перегрев.</li><li>Монитор воткнут в материнскую плату, а не в видеокарту — «нет сигнала» при рабочем ПК.</li><li>Блок питания на 400 Вт с RTX 3060 — выключения под нагрузкой гарантированы.</li><li>Купили плату без обновлённого BIOS под новый процессор — чёрный экран (решается прошивкой с поддерживаемым CPU).</li><li>Экономия на корпусе: глухая передняя панель превращает сборку в духовку.</li><li>Термопаста нанесена «на глаз» большим слоем — хуже, чем маленькой каплей.</li><li>Не включили XMP/EXPO — память работает втрое медленнее, чем способна.</li><li>Windows установлена на HDD из старого ПК — вся скорость нового железа упирается в диск.</li></ul>
+</section>
+<section id="faq">
+<h2>FAQ</h2>
+<details><summary>Что важнее для игр — процессор или видеокарта?</summary><p>Видеокарта даёт 70–80% FPS в играх, но процессор нужен, чтобы её раскрыть. Слабый CPU « душит» даже RTX 4090 в шутерах и онлайн-играх. Проверить дисбаланс можно в калькуляторе выше.</p></details><details><summary>Сколько нужно ОЗУ в 2026 году?</summary><p>16 ГБ — минимум, 32 ГБ — комфортный запас. 8 ГБ сегодня уже мало: современные игры и браузер с парой вкладок съедают их полностью.</p></details><details><summary>Можно ли играть без видеокарты?</summary><p>Да, если у вас Ryzen с графикой (Vega, 780M) или Intel с Iris Xe — в Dota, CS2 и Valorant на средних будет играбельно. Но для AAA-игр видеокарта обязательна.</p></details><details><summary>Что даёт X3D у Ryzen?</summary><p>Дополнительная память-кэш: в шутерах (CS2, Valorant, Warzone) даёт +15–30% FPS, в остальных играх — +5–10%. Лучший выбор для игрового ПК.</p></details><details><summary>Б/у видеокарта — это страшно?</summary><p>Не страшно, если проверить карту под нагрузкой (FurMark, майнинг-тест 20 минут) и купить у продавца с рейтингом. Особенно выгодны б/у RX 5700 XT и RTX 2070 Super.</p></details><details><summary>Нужна ли трассировка лучей?</summary><p>Только если видеокарта уровня RTX 4070 / RX 9070 и выше с DLSS/FSR. На средних картах она съедает слишком много FPS ради не всегда заметной картинки.</p></details><details><summary>Сколько ватт брать в блоке питания?</summary><p>Суммируйте TDP процессора и видеокарты и прибавьте 150–200 Вт запаса. RTX 5080 + Ryzen 7 9800X3D = 850 Вт, средняя сборка = 650 Вт.</p></details><details><summary>Что делать, если ПК не включается?</summary><p>Проверьте в порядке: 1) тумблер на БП и кнопку на сетевике, 2) 24-pin и 8-pin CPU, 3) ОЗУ — переставьте в другой слот, 4) провода передней панели. В 80% случаев дело в одном из этих четырёх.</p></details>
+</section>
+<footer>Помогу собрать ПК · Сделано с помощью Алисы AI · Все цифры — оценки, не бенчмарк</footer>
+</div>
+<script>
+var GPUDATA=[["NVIDIA GeForce GT 710",3],["NVIDIA GeForce GT 730",5],["NVIDIA GeForce GT 1030",12],["NVIDIA GeForce GTX 1050",18],["NVIDIA GeForce GTX 1050 Ti",22],["NVIDIA GeForce GTX 1060 3GB",30],["NVIDIA GeForce GTX 1060 5GB",33],["NVIDIA GeForce GTX 1060 6GB",35],["NVIDIA GeForce GTX 1070",45],["NVIDIA GeForce GTX 1070 Ti",50],["NVIDIA GeForce GTX 1080",55],["NVIDIA GeForce GTX 1080 Ti",65],["NVIDIA GeForce GTX 1650",28],["NVIDIA GeForce GTX 1650 Super",38],["NVIDIA GeForce GTX 1660",40],["NVIDIA GeForce GTX 1660 Super",45],["NVIDIA GeForce GTX 1660 Ti",47],["NVIDIA GeForce RTX 2060",65],["NVIDIA GeForce RTX 2060 12GB",68],["NVIDIA GeForce RTX 2060 Super",72],["NVIDIA GeForce RTX 2070",75],["NVIDIA GeForce RTX 2070 Super",80],["NVIDIA GeForce RTX 2080",85],["NVIDIA GeForce RTX 2080 Super",88],["NVIDIA GeForce RTX 2080 Ti",95],["NVIDIA GeForce RTX 3050",42],["NVIDIA GeForce RTX 3060",58],["NVIDIA GeForce RTX 3060 Ti",72],["NVIDIA GeForce RTX 3070",82],["NVIDIA GeForce RTX 3070 Ti",87],["NVIDIA GeForce RTX 3080 10GB",100],["NVIDIA GeForce RTX 3080 12GB",103],["NVIDIA GeForce RTX 3080 Ti",108],["NVIDIA GeForce RTX 3090",110],["NVIDIA GeForce RTX 3090 Ti",118],["NVIDIA GeForce RTX 4060",72],["NVIDIA GeForce RTX 4060 Ti",85],["NVIDIA GeForce RTX 4070",102],["NVIDIA GeForce RTX 4070 Super",115],["NVIDIA GeForce RTX 4070 Ti Super",125],["NVIDIA GeForce RTX 4080",135],["NVIDIA GeForce RTX 4080 Super",140],["NVIDIA GeForce RTX 4090",170],["NVIDIA GeForce RTX 5060",90],["NVIDIA GeForce RTX 5060 Ti",100],["NVIDIA GeForce RTX 5070",125],["NVIDIA GeForce RTX 5070 Ti",145],["NVIDIA GeForce RTX 5080",155],["NVIDIA GeForce RTX 5090",210],["AMD Radeon R7 240",4],["AMD Radeon R9 270",18],["AMD Radeon R9 280",25],["AMD Radeon R9 280X",30],["AMD Radeon R9 290",40],["AMD Radeon R9 290X",45],["AMD Radeon R9 380",28],["AMD Radeon R9 Fury X",50],["AMD Radeon RX 460",15],["AMD Radeon RX 470",30],["AMD Radeon RX 480",38],["AMD Radeon RX 5500 XT",40],["AMD Radeon RX 560",15],["AMD Radeon RX 570",38],["AMD Radeon RX 580",45],["AMD Radeon RX 590",50],["AMD Radeon RX 5600 XT",55],["AMD Radeon RX 5700",58],["AMD Radeon RX 5700 XT",65],["AMD Radeon RX 6500 XT",35],["AMD Radeon RX 6400",28],["AMD Radeon RX 6600",55],["AMD Radeon RX 6600 XT",65],["AMD Radeon RX 6650 XT",62],["AMD Radeon RX 6700 XT",80],["AMD Radeon RX 6750 XT",82],["AMD Radeon RX 6800",95],["AMD Radeon RX 6800 XT",110],["AMD Radeon RX 6900 XT",118],["AMD Radeon RX 6950 XT",125],["AMD Radeon RX 7600",70],["AMD Radeon RX 7600 XT",75],["AMD Radeon RX 7700 XT",90],["AMD Radeon RX 7800 XT",105],["AMD Radeon RX 7900 GRE",120],["AMD Radeon RX 7900 XT",130],["AMD Radeon RX 7900 XTX",150],["AMD Radeon RX 9060 XT",85],["AMD Radeon RX 9070",125],["AMD Radeon RX 9070 XT",145],["Intel Arc A310",12],["Intel Arc A380",25],["Intel Arc A580",55],["Intel Arc A750",68],["Intel Arc A770",70],["Intel Arc B580",82],["Встроенная: AMD Vega 8",8],["Встроенная: AMD Vega 11",10],["Встроенная: AMD Radeon 680M",12],["Встроенная: AMD Radeon 780M",18],["Встроенная: AMD Radeon 890M",22],["Встроенная: Intel UHD 630",5],["Встроенная: Intel UHD 770",7],["Встроенная: Intel Iris Xe",10],["Встроенная: Intel Arc iGPU",14]];
+var CPUDATA=[["AMD FX-4300",18],["AMD FX-6300",28],["AMD FX-8350",38],["AMD FX-8370",40],["Intel Core i5-2400",35],["Intel Core i7-2600",48],["Intel Core i5-4460",48],["Intel Core i7-4770",60],["Intel Core i7-4790K",68],["Intel Core i7-3770",55],["Intel Xeon E5-2650 v2",52],["Intel Xeon E5-2670",50],["Intel Xeon E5-2680 v4",78],["Intel Core 2 Duo E8400",12],["Intel Pentium G4560",32],["Intel Pentium G5400",38],["Intel Core i3-6100",30],["Intel Core i3-7100",36],["Intel Core i3-8100",48],["Intel Core i3-9100",55],["Intel Core i3-10100",68],["Intel Core i3-12100",95],["Intel Core i3-13100",102],["Intel Core i3-14100",106],["Intel Core i5-7400",50],["Intel Core i5-7500",56],["Intel Core i5-8400",72],["Intel Core i5-8500",76],["Intel Core i5-9400F",80],["Intel Core i5-9600K",92],["Intel Core i5-10400F",92],["Intel Core i5-10600K",108],["Intel Core i5-11400F",105],["Intel Core i5-11600K",112],["Intel Core i5-12400F",128],["Intel Core i5-12600K",145],["Intel Core i5-13400F",150],["Intel Core i5-13600K",175],["Intel Core i5-14600KF",182],["Intel Core i7-7700",68],["Intel Core i7-7700K",78],["Intel Core i7-8700",90],["Intel Core i7-8700K",98],["Intel Core i7-9700F",100],["Intel Core i7-9700K",108],["Intel Core i7-10700F",108],["Intel Core i7-10700K",118],["Intel Core i7-11700F",115],["Intel Core i7-11700K",122],["Intel Core i7-12700F",155],["Intel Core i7-12700K",175],["Intel Core i7-13700K",195],["Intel Core i7-14700KF",205],["Intel Core i9-9900K",120],["Intel Core i9-10900K",128],["Intel Core i9-11900K",128],["Intel Core i9-12900K",185],["Intel Core i9-13900K",225],["Intel Core i9-14900K",232],["Intel Core i9-14900KS",240],["AMD Ryzen 3 1200",42],["AMD Ryzen 3 1300X",48],["AMD Ryzen 3 2200G",45],["AMD Ryzen 3 3100",75],["AMD Ryzen 3 3300X",90],["AMD Ryzen 5 1400",46],["AMD Ryzen 5 1600",62],["AMD Ryzen 5 2600",75],["AMD Ryzen 5 2600X",82],["AMD Ryzen 5 3600",100],["AMD Ryzen 5 3600X",104],["AMD Ryzen 5 3700X",112],["AMD Ryzen 5 3800X",115],["AMD Ryzen 5 5600",125],["AMD Ryzen 5 5600X",132],["AMD Ryzen 5 5700X",142],["AMD Ryzen 5 5700X3D",150],["AMD Ryzen 7 5800X",152],["AMD Ryzen 7 5800X3D",165],["AMD Ryzen 9 5900X",172],["AMD Ryzen 9 5950X",185],["AMD Ryzen 5 7500F",150],["AMD Ryzen 5 7600",158],["AMD Ryzen 5 7600X",165],["AMD Ryzen 7 7700X",180],["AMD Ryzen 7 7800X3D",200],["AMD Ryzen 9 7900X",205],["AMD Ryzen 9 7900X3D",210],["AMD Ryzen 9 7950X",220],["AMD Ryzen 9 7950X3D",225],["AMD Ryzen 5 9600X",180],["AMD Ryzen 7 9700X",195],["AMD Ryzen 7 9800X3D",215],["AMD Ryzen 9 9900X",215],["AMD Ryzen 9 9950X",240],["AMD Ryzen 9 9950X3D",248]];
+var GAMES=[["CS2",200,400,"тактический шутер, важен каждый кадр"],["Dota 2",180,350,"MOBA, важна стабильность без просадок"],["Valorant",300,500,"самый лёгкий шутер для слабых ПК"],["Fortnite",120,300,"режим «Производительность» даёт сотни FPS"],["Apex Legends",130,290,"шутер с капотом 300 FPS"],["Call of Duty: Warzone",90,240,"тяжёлый баттл-рояль, любит видеопамять"],["PUBG",110,250,"чувствительна к процессору и памяти"],["GTA V",110,200,"старая, но до сих пор популярная"],["Cyberpunk 2077",65,160,"главный тест видеокарты и трассировки"],["The Witcher 3",90,180,"RPG, умеренная нагрузка"],["Elden Ring",60,120,"капот 60 FPS, упор на GPU"],["Hogwarts Legacy",55,130,"требует 16+ ГБ ОЗУ и мощную видеокарту"]];
+var PROFILE_SETS=[["Разрешение: минимальное или растянутое (1280x960 в шутерах)","Качество текстур: среднее (текстуры почти не влияют на FPS)","Тени: низкие","Сглаживание: выключено или FXAA","Эффекты: низкие","Отключить: размытие в движении, глубину резкости, трассировку","Ограничение FPS: нет или максимальное","Вертикальная синхронизация: выключена"],["Разрешение: родное монитора","Качество текстур: высокое","Тени: средние или высокие","Сглаживание: TAA / DLSS / FSR в режиме «Качество»","Эффекты: средние","Трассировка лучей: выключена","Отключить: размытие в движении","Ограничение FPS: чуть ниже среднего значения"],["Разрешение: родное, всё на максимум","Качество текстур: ультра","Тени: ультра","Сглаживание: DLSS/FSR «Качество» или родное","Эффекты: ультра","Трассировка лучей: включить, если карта RTX 40/50 или RX 9000","DLSS Frame Generation: включить, если карта RTX 40/50","Заранее ограничьте FPS до стабильного значения"]];
+
+var GPUS=GPUDATA,CPUS=CPUDATA;
+__GAMES__
+var PROFILE_NAMES=["Максимальный FPS","Баланс","Максимальное качество"];
+var PROFILE_MULT=[1.5,1.0,0.72];
+var RES_MULT=[1.0,0.65,0.4];
+function fill(id,arr,def){
+  var s=document.getElementById(id);
+  for(var i=0;i<arr.length;i++){
+    var o=document.createElement("option");
+    o.value=i; o.textContent=arr[i][0];
+    if(i===def) o.selected=true;
+    s.appendChild(o);
+  }
+}
+function initCalc(){
+  fill("cpuSel",CPUS,73);
+  fill("gpuSel",GPUS,67);
+}
+function calcAll(){
+  var c=CPUS[document.getElementById("cpuSel").value];
+  var g=GPUS[document.getElementById("gpuSel").value];
+  var ram=parseInt(document.getElementById("ramSel").value,10);
+  var res=parseInt(document.getElementById("resSel").value,10);
+  var rm=RES_MULT[res];
+  var ramK=1.0; if(ram===8){ramK=0.85;} else if(ram>=32){ramK=1.03;}
+  var cpuCap=c[1]*2;
+  var html="";
+  var sumGpu=0,sumCpu=0;
+  for(var gi=0;gi<GAMES.length;gi++){
+    var game=GAMES[gi];
+    var base=game[1];
+    var cards="";
+    for(var p=0;p<3;p++){
+      var fps=base*(g[1]/100)*PROFILE_MULT[p]*rm*ramK;
+      var capped=Math.min(fps,cpuCap);
+      fps=Math.round(capped);
+      var target=(p===0)?144:60;
+      var rec=(fps>=target)?" rec":"";
+      var bad="";
+      if(ram===8 && (game[0]==="Hogwarts Legacy"||game[0]==="Call of Duty: Warzone")){bad="<div class=\"warn\">Игра требует не меньше 16 ГБ ОЗУ — будут фризы.</div>";}
+      cards+="<div class=\"pcard"+rec+"\"><div class=\"ptop\"><span class=\"pname\">"+PROFILE_NAMES[p]+"</span><span class=\"pfps\">~"+fps+" FPS</span></div>"+bad+"<ul>";
+      var sets=PROFILE_SETS[p];
+      for(var k=0;k<sets.length;k++){cards+="<li>"+sets[k]+"</li>";}
+      cards+="</ul></div>";
+    }
+    html+="<div class=\"gcard\"><h4>"+game[0]+" <span class=\"gtag\">"+game[3]+"</span></h4><div class=\"pgrid\">"+cards+"</div></div>";
+    sumGpu+=base*(g[1]/100)*rm*ramK;
+    sumCpu+=cpuCap;
+  }
+  document.getElementById("results").innerHTML=html;
+  var rGpu=Math.round(sumGpu/GAMES.length), rCpu=Math.round(sumCpu/GAMES.length);
+  var ratio=rGpu/rCpu, verdict="";
+  if(ratio>1.25){verdict="<b>Узкое место — процессор</b> ("+c[0]+"). Видеокарта ("+g[0]+") сможет дать больше — процессор её сдерживает.";}
+  else if(ratio<0.8){verdict="<b>Узкое место — видеокарта</b> ("+g[0]+"). Процессор ("+c[0]+") рассчитан на более мощные карты.";}
+  else {verdict="<b>Отличный баланс</b>: "+c[0]+" и "+g[0]+" подходят друг другу — ни одна деталь не простаивает.";}
+  if(ram===8){verdict+="<br><b>8 ГБ ОЗУ — мало</b> для современных игр. Рекомендую 16 ГБ.";}
+  document.getElementById("verdict").innerHTML=verdict;
+}
+
+window.addEventListener("load", initCalc);
+</script>
+
+</body>
+</html>
